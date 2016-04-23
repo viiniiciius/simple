@@ -5,7 +5,7 @@
 		<groupId>br.com.vitulus.simple</groupId>
 		<artifactId>simple-parent</artifactId>
 		<version>0.1-alpha</version>
-		<relativePath>../simple-parent/pom.xml</relativePath>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>simple-sql-sintax</artifactId>
 	<packaging>jar</packaging>

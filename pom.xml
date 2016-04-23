@@ -15,9 +15,9 @@
 	</properties>
 
 	<modules>
-		<module>../simple-jdbc</module>
-		<module>../simple-sql-sintax</module>
-		<module>../simple-validator</module>
+		<module>simple-sql-sintax</module>
+		<module>simple-jdbc</module>
+		<module>simple-validator</module>
 	</modules>
 
 	<dependencies>
