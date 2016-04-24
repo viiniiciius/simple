@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import br.com.vitulus.simple.jdbc.Entity;
 import br.com.vitulus.simple.jdbc.EntityManager;
 import br.com.vitulus.simple.jdbc.annotation.ForwardKey;
@@ -45,7 +47,9 @@ public abstract class AbstractDao<T extends Entity> implements Serializable,Enti
 	
 	private static Map<String, String> 			storedQuerysMap;
 	private static Map<String, List<String>> 	metaTableAICache;
-
+	private static DataSource					datasource;
+	private static ThreadLocal<Connection>		currentConnection = new ThreadLocal<Connection>();
+	
 	static {
 		storedQuerysMap = new HashMap<String, String>();
 		metaTableAICache = new HashMap<String, List<String>>();
@@ -57,22 +61,44 @@ public abstract class AbstractDao<T extends Entity> implements Serializable,Enti
 		this.classe = classe;
 	}
 
-	public ConnectionFactory getConnectionFactory() {
-		String schema = ContextSetup.DEFAULT_SCHEMA;//DaoFactory.instance().getSchema(this);
-		return ConnectionFactory.getInstance(schema);
+	public static void registerDatasource(DataSource datasource){
+		AbstractDao.datasource = datasource;
+	}
+	
+	public DataSource getDataSource() {
+		if(datasource == null){
+			ConnectionFactory cf = ConnectionFactory.getInstance(ContextSetup.DEFAULT_SCHEMA);
+			try {
+				return cf.getDataSource();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return datasource;
 	}
 
-	public Connection getConnection() {
+	public synchronized Connection getConnection() {
+		Connection con = null;
 		try {
-			return this.getConnectionFactory().getConnection();
+			if((con = currentConnection.get()) == null){
+				currentConnection.set(con = getDataSource().getConnection());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return con;
 	}
 
-	public void closeConnection() {
-		this.getConnectionFactory().closeConnection();
+	public synchronized void closeConnection() {
+		Connection con = currentConnection.get();
+		if(con != null){
+			try {
+				con.close();
+				currentConnection.remove();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public ResultSet executeQuery(String sql, Collection<Object> params,Integer limit) throws SQLException {

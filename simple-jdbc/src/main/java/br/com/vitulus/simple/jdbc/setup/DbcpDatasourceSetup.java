@@ -103,7 +103,7 @@ public class DbcpDatasourceSetup implements IDBCPDatasourceSetup{
 	 */
 	public enum DBCPBasic implements DbcpObjectProvider{
 		APACHE_COMMONS(
-			"org.apache.commons.dbcp.BasicDataSource",
+			"javax.sql.DataSource",
 			"org.apache.commons.dbcp.BasicDataSourceFactory"
 		),
 		TOMCAT(
@@ -303,6 +303,12 @@ public class DbcpDatasourceSetup implements IDBCPDatasourceSetup{
 		Context context = setupRoot(ic, jndiName);
 		String driver = jndiName + "/driver";
 		Reference poolReference = new Reference(poolProvider.getClassName(), poolProvider.getClassFactory(), null);
+		
+		poolReference.add(new StringRefAddr("driverClassName", getConfig().getConnConfig().getDriver()));
+		poolReference.add(new StringRefAddr("url", getConfig().getConnConfig().getUrl()));
+		poolReference.add(new StringRefAddr("username", getConfig().getConnConfig().getUser()));
+		poolReference.add(new StringRefAddr("password", getConfig().getConnConfig().getPassword()));
+		
 		poolReference.add(new StringRefAddr("dataSourceName", driver));
 		poolReference.add(new StringRefAddr("maxActive", getConfig().getPoolConfig().getMaxActive()));
 		poolReference.add(new StringRefAddr("maxIdle", getConfig().getPoolConfig().getMaxIdle()));

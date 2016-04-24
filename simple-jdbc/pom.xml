@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>br.com.vitulus.simple</groupId>
 		<artifactId>simple-parent</artifactId>
-		<version>0.1-alpha</version>
+		<version>0.3-alpha</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>simple-jdbc</artifactId>
@@ -14,7 +14,7 @@
 		<dependency>
 			<groupId>br.com.vitulus.simple</groupId>
 			<artifactId>simple-sql-sintax</artifactId>
-			<version>0.1-alpha</version>
+			<version>0.3-alpha</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>

@@ -51,7 +51,7 @@ public class SimpleSetup implements ContextSetup{
 	}
 	
 	public void setup(String schema,String... packages){
-		ConnectionFactory.registerSchema(schema, config);
+		ConnectionFactory.create(schema, config);
 		if(packages != null && packages.length > 0){
 			DaoRegister daoSetup = new DaoRegister(schema,packages);
 			daoSetup.registerEntityManagers();			

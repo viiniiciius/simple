@@ -67,7 +67,7 @@ public abstract class SqliteSetupHelper implements ContextSetup{
 
 	@Override
 	public void setup(String schema, String... packages) {		
-		ConnectionFactory factory = ConnectionFactory.registerSchema(schema, config);
+		ConnectionFactory factory = ConnectionFactory.create(schema, config);
 		if(packages != null && packages.length > 0){
 			DaoRegister daoSetup = new DaoRegister(schema,packages);
 			daoSetup.registerEntityManagers();			
