@@ -48,6 +48,8 @@ public class RelationalSqlDatabase implements IDatabase{
 			return inTransaction;
 		}
 	}
+
+	private static ThreadLocal<Connection>		currentConnection = new ThreadLocal<Connection>();
 	
 	private String								schema;
 	private LinkedList<SqlTransaction> 			transactions;
@@ -76,17 +78,28 @@ public class RelationalSqlDatabase implements IDatabase{
 		return factory;
 	}
 	
-	protected Connection getConnection() {
+	protected synchronized Connection getConnection() {
+		Connection con = null;
 		try {
-			return this.getConnectionFactory().getConnection();
+			if((con = currentConnection.get()) == null){
+				currentConnection.set(con = this.getConnectionFactory().getConnection());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return null;
+		return con;
 	}
 	
-	public void closeConnection() {
-		this.getConnectionFactory().closeConnection();
+	public synchronized void closeConnection() {
+		Connection con = currentConnection.get();
+		if(con != null){
+			try {
+				con.close();
+				currentConnection.remove();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	@Override

@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>br.com.vitulus.simple</groupId>
 		<artifactId>simple-parent</artifactId>
-		<version>0.1-alpha</version>
+		<version>0.3-alpha</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 	<artifactId>simple-validator</artifactId>
